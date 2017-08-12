@@ -4,4 +4,4 @@
 
 截图:
 
-![bsp](https://eddieby.top/bsp.png)
+![bsp](https://eddieby.top/bsp1.png)
