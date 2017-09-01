@@ -140,7 +140,7 @@ def start():
     for i, port in enumerate(p):
      # print i,port,data[port],get_traffic(port)
      mod_traffic_web(port,get_traffic(port))
-     traffic = get_traffic_web(port)+get_traffic(port)
+     traffic = int(get_traffic_web(port))+int(get_traffic(port))
      if int(traffic) >= int(data[port]):
       d_json(port)
       d_limit(port)
