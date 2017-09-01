@@ -23,7 +23,7 @@ def md5(src):
 def get_traffic_web(port):
  params={'port':port,'key':md5(str(r_config()['bsp_key'])+str(port))}
  res=http_get(r_config()['get_traffic_url'],params)
- print res
+ print int(res)
 
 def mod_traffic_web(port,t):
  params = {'port': port, 'key': md5(str(r_config()['bsp_key']) + str(port) + str(t)),'t':t}
@@ -140,7 +140,7 @@ def start():
     for i, port in enumerate(p):
      # print i,port,data[port],get_traffic(port)
      mod_traffic_web(port,get_traffic(port))
-     traffic = int(get_traffic_web(port))+int(get_traffic(port))
+     traffic = get_traffic_web(port)+int(get_traffic(port))
      if int(traffic) >= int(data[port]):
       d_json(port)
       d_limit(port)
