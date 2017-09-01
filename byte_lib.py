@@ -23,12 +23,12 @@ def md5(src):
 def get_traffic_web(port):
  params={'port':port,'key':md5(str(r_config()['bsp_key'])+str(port))}
  res=http_get(r_config()['get_traffic_url'],params)
- print int(res)
+ return int(res)
 
 def mod_traffic_web(port,t):
  params = {'port': port, 'key': md5(str(r_config()['bsp_key']) + str(port) + str(t)),'t':t}
  res = http_get(r_config()['mod_traffic_url'], params)
- print res
+ return res
 
 def http_get(url,params):
  params=urllib.urlencode(params)
