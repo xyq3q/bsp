@@ -8,6 +8,7 @@ import math
 import time
 import urllib
 import hashlib
+import threading
 
 def get_traffic(port):
  result = os.popen("iptables -n -v -L -t filter -x |grep -i 'spt:" + port + "'|awk '{print $2}'")
@@ -139,7 +140,8 @@ def start():
    elif r_config()['limit_method']=='web':
     for i, port in enumerate(p):
      # print i,port,data[port],get_traffic(port)
-     mod_traffic_web(port,get_traffic(port))
+     t = threading.Thread(target=mod_traffic_web, args=(port,get_traffic(port),))
+     t.start()
      traffic = get_traffic_web(port)+int(get_traffic(port))
      if int(traffic) >= int(data[port]):
       d_json(port)
