@@ -6,6 +6,8 @@ import json
 import codecs
 import math
 import time
+import urllib
+import hashlib
 
 def get_traffic(port):
  result = os.popen("iptables -n -v -L -t filter -x |grep -i 'spt:" + port + "'|awk '{print $2}'")
@@ -14,6 +16,25 @@ def get_traffic(port):
   return ""
  else:
   return int(math.floor(float(res)/math.pow(1000,2)))
+
+def md5(src):
+ return hashlib.md5(src).hexdigest()
+
+def get_traffic_web(port):
+ params={'port':port,'key':md5(str(r_config()['bsp_key'])+str(port))}
+ res=http_get(r_config()['get_traffic_url'],params)
+ print res
+
+def mod_traffic_web(port,t):
+ params = {'port': port, 'key': md5(str(r_config()['bsp_key']) + str(port) + str(t)),'t':t}
+ res = http_get(r_config()['mod_traffic_url'], params)
+ print res
+
+def http_get(url,params):
+ params=urllib.urlencode(params)
+ f = urllib.urlopen(url + "?%s" % params)
+ res = f.read()
+ return res
 
 def add_rules(port):
  res = get_traffic(port)
@@ -107,13 +128,26 @@ def start():
    f.close() 
    sys.exit('without any limit bsp stoped')
   else:
-   for i,port in enumerate(p):
-    # print i,port,data[port],get_traffic(port)
-    if int(get_traffic(port))>=int(data[port]):
-     d_json(port)
-     d_limit(port)
-     del_rules(port)
-  restart_ss()
+   if r_config()['limit_method']=='local':
+     for i, port in enumerate(p):
+      # print i,port,data[port],get_traffic(port)
+      if int(get_traffic(port)) >= int(data[port]):
+       d_json(port)
+       d_limit(port)
+       del_rules(port)
+     restart_ss()
+   elif r_config()['limit_method']=='web':
+    for i, port in enumerate(p):
+     # print i,port,data[port],get_traffic(port)
+     mod_traffic_web(port,get_traffic(port))
+     traffic = get_traffic_web(port)+get_traffic(port)
+     if int(traffic) >= int(data[port]):
+      d_json(port)
+      d_limit(port)
+      del_rules(port)
+     else:
+      add_rules_from_limit()
+    restart_ss()
   time.sleep(float(r_config()['update_time']))
 
 

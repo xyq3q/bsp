@@ -68,4 +68,4 @@ for op, value in opts:
         else:
          sys.exit('no bsp process')
     elif op=="--version":
-        print "v1.0.1"
+        print "v1.2.0"
