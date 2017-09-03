@@ -13,7 +13,7 @@ def get_traffic(port):
  if res=="":
   return ""
  else:
-  return int(math.floor(float(res)/math.pow(1000,2)))
+  return int(round(float(res)/math.pow(1000,2)))
 
 def add_rules(port):
  res = get_traffic(port)
