@@ -15,7 +15,7 @@ def get_traffic(port):
  if res=="":
   return ""
  else:
-  return int(math.floor(float(res)/math.pow(1000,2)))
+  return int(round(float(res)/math.pow(1000,2)))
 
 def md5(src):
  return hashlib.md5(src).hexdigest()
@@ -139,12 +139,13 @@ def start():
    elif r_config()['limit_method']=='web':
     for i, port in enumerate(p):
      # print i,port,data[port],get_traffic(port)
-     mod_traffic_web(port,get_traffic(port))
-     traffic = get_traffic_web(port)+int(get_traffic(port))
-     if int(traffic) >= int(data[port]):
-      d_json(port)
-      d_limit(port)
-      del_rules(port)
+     if int(get_traffic(port))>0:
+      traffic = get_traffic_web(port)+int(get_traffic(port))
+      mod_traffic_web(port, get_traffic(port))
+      if int(traffic) >= int(data[port]):
+       d_json(port)
+       d_limit(port)
+       del_rules(port)
     add_rules_from_limit()
     restart_ss()
   time.sleep(float(r_config()['update_time']))
