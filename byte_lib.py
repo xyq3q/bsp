@@ -8,7 +8,7 @@ import math
 import time
 
 def get_traffic(port):
- result = os.popen("iptables -n -v -L -t filter -x |grep -i 'spt:" + port + "'|awk '{print $2}'")
+ result = os.popen("iptables -n -v -L -t filter -x |grep -i 'spt:" + port + "'|awk '{sum +=$2} END {print sum}'")
  res = result.read()
  if res=="":
   return ""
@@ -21,13 +21,19 @@ def add_rules(port):
   del_rules(port)
   os.system('iptables -A OUTPUT -p tcp --sport ' + port)
   os.system('iptables -A INPUT -p tcp --dport ' + port)
+  os.system('iptables -A OUTPUT -p udp --sport ' + port)
+  os.system('iptables -A INPUT -p udp --dport ' + port)
  else:
   os.system('iptables -A OUTPUT -p tcp --sport ' + port)
   os.system('iptables -A INPUT -p tcp --dport ' + port)
+  os.system('iptables -A OUTPUT -p udp --sport ' + port)
+  os.system('iptables -A INPUT -p udp --dport ' + port)
 
 def del_rules(port):
  os.system('iptables -D OUTPUT -p tcp --sport ' + port)
  os.system('iptables -D INPUT -p tcp --dport ' + port)
+ os.system('iptables -D OUTPUT -p udp --sport ' + port)
+ os.system('iptables -D INPUT -p udp --dport ' + port)
 
 def r_config():
  with codecs.open('/etc/byte/byte_ss.json') as json_file:
