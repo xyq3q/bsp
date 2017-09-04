@@ -137,17 +137,17 @@ def start():
        del_rules(port)
      restart_ss()
    elif r_config()['limit_method']=='web':
-    for i, port in enumerate(p):
+     for i, port in enumerate(p):
      # print i,port,data[port],get_traffic(port)
-     if int(get_traffic(port))>0:
-      traffic = get_traffic_web(port)+int(get_traffic(port))
-      mod_traffic_web(port, get_traffic(port))
-      if int(traffic) >= int(data[port]):
-       d_json(port)
-       d_limit(port)
-       del_rules(port)
-    add_rules_from_limit()
-    restart_ss()
+      if int(get_traffic(port))>0:
+       traffic = get_traffic_web(port)+int(get_traffic(port))
+       mod_traffic_web(port, get_traffic(port))
+       if int(traffic) >= int(data[port]):
+        d_json(port)
+        d_limit(port)
+        del_rules(port)
+     add_rules_from_limit()
+     restart_ss()
   time.sleep(float(r_config()['update_time']))
 
 
