@@ -6,11 +6,12 @@ import json
 import codecs
 import math
 import time
+import re
 
 def get_traffic(port):
  result = os.popen("iptables -n -v -L -t filter -x |grep -i 'spt:" + port + "'|awk '{sum +=$2} END {print sum}'")
  res = result.read()
- if res=="":
+ if not re.compile('\d').search(res):
   return ""
  else:
   return int(round(float(res)/math.pow(1000,2)))
