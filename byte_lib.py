@@ -12,7 +12,7 @@ import hashlib
 def get_traffic(port):
  result = os.popen("iptables -n -v -L -t filter -x |grep -i 'spt:" + port + "'|awk '{sum +=$2} END {print sum}'")
  res = result.read()
- if not res.isdigit():
+ if res=="":
   return ""
  else:
   return int(round(float(res)/math.pow(1000,2)))
