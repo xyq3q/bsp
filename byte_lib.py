@@ -75,9 +75,12 @@ def w_json(data):
  with codecs.open(r_config()['ssconf_path'], 'w', 'utf-8') as json_file:
   json_file.write(json.dumps(data, sort_keys=True, indent=4).decode('utf-8'))
 
-def a_limit(port,size):
+def a_limit(port,size,dt):
  data = r_config()
- data['port_limit'][port] = size
+ d={}
+ d['size']=size
+ d['due_time']=dt
+ data['port_limit'][port] = d
  w_cofig(data)
 
 def c_limit(port):
@@ -138,7 +141,7 @@ def start():
    if r_config()['limit_method']=='local':
      for i, port in enumerate(p):
       # print i,port,data[port],get_traffic(port)
-      if int(get_traffic(port)) >= int(data[port]):
+      if int(get_traffic(port)) >= int(data[port]['size']):
        d_json(port)
        d_limit(port)
        del_rules(port)
@@ -149,7 +152,11 @@ def start():
       if int(get_traffic(port))>0:
        traffic = get_traffic_web(port)+int(get_traffic(port))
        mod_traffic_web(port, get_traffic(port))
-       if int(traffic) >= int(data[port]):
+       if int(traffic) >= int(data[port]['size']):
+        d_json(port)
+        d_limit(port)
+        del_rules(port)
+      if int(time.time()) >= int(data[port]['due_time']):
         d_json(port)
         d_limit(port)
         del_rules(port)

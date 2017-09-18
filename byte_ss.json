@@ -2,8 +2,8 @@
     "ssconf_path":"/etc/shadowsocks-python/config.json",
     "ress_cmd":"/etc/init.d/shadowsocks-python restart",
     "limit_method":"web",
-    "get_traffic_url":"http://eddieby.top/byte_gd/public/index.php/index/index/get_traffic",
-    "mod_traffic_url":"http://eddieby.top/byte_gd/public/index.php/index/index/mod_traffic",
+    "get_traffic_url":"http://eddieby.top/gd/public/index.php/index/index/get_traffic",
+    "mod_traffic_url":"http://eddieby.top/gd/public/index.php/index/index/mod_traffic",
     "bsp_key":"4j9i03mm92js83",
     "update_time":"60",
     "port_limit": {

@@ -4,7 +4,7 @@
 # E-mail: edb@paituo.me
 import byte_lib
 import os,sys,getopt
-opts, args = getopt.getopt(sys.argv[1:], "aAcdCjDORrp:s:P:", ["stop", "start","version"])
+opts, args = getopt.getopt(sys.argv[1:], "aAcdCjDORrp:s:P:t:", ["stop", "start","version"])
 ss_port = ""
 ss_size = ""
 ss_pwd = ""
@@ -15,19 +15,21 @@ for op, value in opts:
         ss_size = value
     elif op=="-P":
         ss_pwd = value
+    elif op=="-t":
+        due_time = value
     elif op=="-a":
         byte_lib.add_rules(ss_port)
     elif op=="-c":
         if byte_lib.get_traffic(ss_port)=="" or ss_port not in list(byte_lib.r_config()['port_limit']):
          print "no limit info or beyond the limited."
         else:
-         print str(byte_lib.get_traffic(ss_port)) + "M/" + str(byte_lib.c_limit(ss_port)) + "M"
+         print str(byte_lib.get_traffic(ss_port)) + "M/" + str(byte_lib.c_limit(ss_port)['size']) + "M"
     elif op=="-d":
         byte_lib.del_rules(ss_port)
     elif op=="-A":
-        byte_lib.a_limit(ss_port,ss_size)
+        byte_lib.a_limit(ss_port,ss_size,due_time)
     elif op=="-C":
-        print byte_lib.c_limit(ss_port)
+        print byte_lib.c_limit(ss_port)['size']
     elif op=="-j":
         byte_lib.a_json(ss_port,ss_pwd)
     elif op=="-D":
