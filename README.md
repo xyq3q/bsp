@@ -1,6 +1,6 @@
-# bsp - shadowsocks多用户、限流管理工具
+# bsp - shadowsocks多用户、流量管理工具
 
-**bsp是shadowsocks多用户、限流管理工具** 
+**bsp是shadowsocks多用户、流量管理工具** 
 
 支持shadowsocks-python和shadowsocks-Go
 
