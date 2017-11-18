@@ -55,7 +55,7 @@
       echo ds($data);
       break;  
   	default:
-  		echo 2;
+  		echo "edboffical - carpe diem!";
   		break;
   }
 ?>
