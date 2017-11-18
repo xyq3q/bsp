@@ -1,4 +1,4 @@
-![bsp](http://paituo.me/bsp.png)
+![bsp](http://paituo.me/bsp1.png)
 
 **bsp是shadowsocks多用户、流量管理工具** 
 
