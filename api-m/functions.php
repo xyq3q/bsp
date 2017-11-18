@@ -41,14 +41,14 @@
       $data['limit']=$limit;
       $data['dt']=$dt;
       $data['key']=md5($bsp_key.$data['port'].$data['pwd'].$data['limit'].$data['dt']);
-      return b_post('http://'.$ip.'/ss_set.php',$data);
+      return b_post('http://'.$ip.'/api-n/ss_set.php',$data);
   }
   function ss_del($ip,$port){
       global $result;
       $bsp_key=$result['bsp_key'];
       $data['port']=$port;
       $data['key']=md5($bsp_key.$data['port']);
-      return b_post('http://'.$ip.'/ss_del.php',$data);
+      return b_post('http://'.$ip.'/api-n/ss_del.php',$data);
   }
   function au($data){
     	global $con;
