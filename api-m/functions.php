@@ -253,8 +253,8 @@
           $res = mysql_query($sql,$con);
           $results = m_arr($res);
           $sql1="SELECT * FROM `bsp_user` WHERE `port` = $data[port]";
-          $res1 = mysql_query($sql,$con);
-          $results1 = m_arr($res);
+          $res1 = mysql_query($sql1,$con);
+          $results1 = m_arr($res1);
           foreach ($results as $k => $v) {
              ss_set($results[$k]['ip'],$results1['port'],$results1['pwd'],$results1['total'],$results1['due_time']);
           }
