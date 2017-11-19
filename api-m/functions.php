@@ -281,7 +281,6 @@
     	return md5($str);
   }
   function is_empty($arr){
-        array_pop($arr);
     	  $empty = true;
     	  foreach($arr as $k=>$v){
           if (!is_null($arr[$k])) {
