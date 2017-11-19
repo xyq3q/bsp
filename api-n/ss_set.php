@@ -6,10 +6,11 @@
   $port=$_POST["port"];
   $pwd=$_POST["pwd"];
   $limit=$_POST["limit"];
+  $dt=$_POST["dt"];
   $key=$_POST["key"];
-  if ($port!=''&&$pwd!=''&&$key!='') {
-          if ($key==md5($bsp_key.$port.$pwd.$limit)) {
-                exec("sudo bsp -p ".$port." -P ".$pwd." -s ".$limit." -a -A -j",$output);
+  if ($port!=''&&$pwd!=''&&$key!=''&&$dt!='') {
+          if ($key==md5($bsp_key.$port.$pwd.$limit.$dt)) {
+                exec("sudo bsp -p ".$port." -P ".$pwd." -s ".$limit." -t ".$dt." -a -A -j",$output);
                 echo "success:true";
           }else{
             echo "success:false";
