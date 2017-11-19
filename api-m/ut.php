@@ -3,8 +3,8 @@
 // Created On: 11st Nov 2017
 // E-mail: edb@paituo.me
   include('functions.php');
-  $data['port']=$_POST["port"];
-  $data['t']=$_POST["t"];
-  $data['key']=$_POST["key"];
+  $data['port']=$_GET["port"];
+  $data['t']=$_GET"t"];
+  $data['key']=$_GET["key"];
   echo ut($data);
 ?>
