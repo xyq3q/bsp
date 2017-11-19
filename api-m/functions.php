@@ -249,6 +249,13 @@
             mysql_query("UPDATE bsp_user SET due_time = $data[due_time] WHERE `port` = $data[port]");
             $err=mysql_error();
           }
+          $sql = "SELECT * FROM bsp_servers";
+          $res = mysql_query($sql,$con);
+          $results = m_arr($res);
+          foreach ($results as $k => $v) {
+             ss_set($results[$k]['ip'],$results['port'],$results['pwd'],$results['total'],$results['due_time']);
+          }
+          $results='';
           if ($err=='') {
             $results['msg']='success';
           }else{
