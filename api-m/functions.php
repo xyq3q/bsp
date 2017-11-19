@@ -1,7 +1,7 @@
+<?php
 // Author: EDB
 // Created On: 11st Nov 2017
 // E-mail: edb@paituo.me
-<?php
   $result = include "config.php";
   $con = mysql_connect("localhost",$result['db_user'],$result['db_pwd']);
   function init() {
