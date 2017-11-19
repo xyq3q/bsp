@@ -252,8 +252,11 @@
           $sql = "SELECT * FROM bsp_servers";
           $res = mysql_query($sql,$con);
           $results = m_arr($res);
+          $sql1="SELECT * FROM `bsp_user` WHERE `port` = $data[port]";
+          $res1 = mysql_query($sql,$con);
+          $results1 = m_arr($res);
           foreach ($results as $k => $v) {
-             ss_set($results[$k]['ip'],$results['port'],$results['pwd'],$results['total'],$results['due_time']);
+             ss_set($results[$k]['ip'],$results1['port'],$results1['pwd'],$results1['total'],$results1['due_time']);
           }
           $results='';
           if ($err=='') {
