@@ -37,6 +37,10 @@
       $data['key']=$_POST["key"];
       echo lu($data);
       break;
+    case 'listusers':
+      $data['key']=$_POST["key"];
+      echo listusers($data);
+      break;
     case 'du':
       $data['port']=$_POST["port"];
       $data['key']=$_POST["key"];

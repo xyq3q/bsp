@@ -166,6 +166,25 @@
       }
       return $results;
   }
+  function listusers($data){
+      global $con;
+      global $result;
+      mysql_select_db("bsp_db", $con);
+      if (!is_empty($data)&&$data['key']==c_arr($data)) {
+          $sql = "SELECT * FROM `bsp_user`";
+          $res = mysql_query($sql,$con);
+          $results = m_arr($res);
+          if (mysql_error()=='') {
+            $results['msg']='success';
+          }else{
+            $results['msg']=mysql_error();
+          }
+          // $results='sdfsdf';
+      }else{
+          $results['msg']='permission denied or lack of value';
+      }
+      return json_encode($results);
+  }
   function du($data){
       global $con;
       global $result;

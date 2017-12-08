@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>云端的日子</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <form role="form">
+                <div class="form-group">
+                    <label for="bsp_key">KEY</label>
+                    <input type="text" class="form-control" id="bsp_key" placeholder="bsp key">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-9">
+            <ul id="myTab" class="nav nav-tabs">
+                <li class="active">
+                    <a href="#node" data-toggle="tab">节点管理</a>
+                </li>
+                <li><a href="#user" data-toggle="tab">用户管理</a></li>
+            </ul>
+
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade in active" id="node">
+                    <table class="table table-striped">
+                        <caption>节点</caption>
+                        <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>IP</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody id="node_list">
+
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-primary" id="addnode_btn" data-toggle="modal"
+                            data-target="#myModal">添加节点
+                    </button>
+                    <button type="button" id="refresh_nodes" class="btn btn-primary">刷新</button>
+                </div>
+                <div class="tab-pane fade" id="user">
+                    <table class="table table-striped">
+                        <caption>用户</caption>
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>端口</th>
+                            <th>密码</th>
+                            <th>流量（M）</th>
+                            <th>已用流量（M）</th>
+                            <th>有效时间</th>
+                            <th>创建时间</th>
+                        </tr>
+                        </thead>
+                        <tbody id="user_list">
+
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-primary" id="adduser_btn" data-toggle="modal"
+                            data-target="#addUser">添加用户
+                    </button>
+                    <button type="button" id="refresh_users" class="btn btn-primary">刷新</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    添加节点
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" id="addnode_form">
+                    <div class="form-group">
+                        <label for="node_ip">节点IP</label>
+                        <input type="text" class="form-control" id="node_ip" placeholder="请输入节点的IP地址">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" id="addas">
+                    提交更改
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="addUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel2">
+                    添加用户
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" id="adduser_form">
+                    <div class="form-group">
+                        <label for="port">端口</label>
+                        <input type="text" class="form-control" id="port" placeholder="端口">
+
+                        <label for="pwd">密码</label>
+                        <input type="text" class="form-control" id="pwd" placeholder="密码">
+
+                        <label for="total">流量（M）</label>
+                        <input type="text" class="form-control" id="total" placeholder="流量">
+
+                        <label for="total" class="used">已用流量（M）</label>
+                        <input type="text" class="form-control used" id="used" placeholder="已用流量">
+
+                        <label for="due_time">过期时间</label>
+                        <input type="text" class="form-control" id="due_time" placeholder="过期时间,如：2018-01-01">
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" id="add_user">
+                    提交更改
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+
+    $(function () {
+        $.get("https://raw.githubusercontent.com/placemarker/jQuery-MD5/master/jquery.md5.js")
+            .done(function (js) {
+                $("body").append("<script>" + js + "<\/script>")
+            })
+
+        $("#bsp_key").change(function () {
+            refresh_nodes()
+            refresh_users()
+        })
+
+        $("#adduser_btn").click(function () {
+            $(".used").hide()
+            $("#adduser_form")[0].reset()
+        })
+
+        $("#addnode_btn").click(function () {
+            $("#addnode_form")[0].reset()
+        })
+
+        $("#addas").click(function () {
+
+            var bsp_key = $("#bsp_key").val().trim()
+            if (bsp_key === '') {
+                alert('请输入bsp key')
+                return
+            }
+            var node_ip = $("#node_ip").val().trim()
+            if (node_ip === '') {
+                alert('请输入节点的IP地址')
+                return
+            }
+            var md5 = $.md5(bsp_key + node_ip);
+            $.ajax({url: "/bsp/api-m/bsp.php", method: "POST", data: {operation: "as", ip: node_ip, key: md5}})
+                .done(function (re) {
+                    var msg = JSON.parse(re)
+                    alert(msg.msg);
+                    if (msg.msg === 'success') {
+                        $("#myModal").modal('hide')
+                        refresh_nodes()
+                    }
+                });
+
+
+        })
+
+        $("#add_user").click(function () {
+            var bsp_key = $("#bsp_key").val().trim()
+            if (bsp_key === '') {
+                alert('请输入bsp key')
+                return
+            }
+            var port = $("#port").val().trim()
+            if (port === '') {
+                alert('请输入端口')
+                return
+            }
+            var pwd = $("#pwd").val().trim()
+            if (pwd === '') {
+                alert('请输入密码')
+                return
+            }
+            var total = $("#total").val().trim()
+            if (total === '') {
+                alert('请输入流量')
+                return
+            }
+            var due_time = $("#due_time").val().trim()
+            if (due_time === '') {
+                alert('请输入过期时间')
+                return
+            }
+
+            var used = $("#used").val().trim()
+
+            var time = new Date(due_time)
+            var unixTime = time.getTime() / 1000
+
+            if ($(".used").is(':hidden')) {
+                var md5 = $.md5(bsp_key + port + pwd + total + unixTime);
+                $.ajax({
+                    url: "/bsp/api-m/bsp.php",
+                    method: "POST",
+                    data: {operation: "au", port: port, pwd: pwd, total: total, due_time: unixTime, key: md5}
+                })
+                    .done(function (re) {
+                        var msg = JSON.parse(re)
+                        alert(msg.msg);
+                        if (msg.msg === 'success') {
+                            $("#addUser").modal('hide')
+                            refresh_users()
+                        }
+                    });
+            } else {
+                var md5 = $.md5(bsp_key + port + pwd + used + total + unixTime);
+                $.ajax({
+                    url: "/bsp/api-m/bsp.php",
+                    method: "POST",
+                    data: {
+                        operation: "mu",
+                        used: used,
+                        port: port,
+                        pwd: pwd,
+                        total: total,
+                        due_time: unixTime,
+                        key: md5
+                    }
+                })
+                    .done(function (re) {
+                        var msg = JSON.parse(re)
+                        alert(msg.msg);
+                        if (msg.msg === 'success') {
+                            $("#addUser").modal('hide')
+                            refresh_users()
+                        }
+                    });
+            }
+
+
+        })
+
+
+        $("#node_list").on("click", ".node_del", function (e) {
+            console.log($(this).closest(".node_s"))
+            var id = $(this).closest(".node_s").children(".node_id").html()
+
+            var bsp_key = $("#bsp_key").val().trim()
+            if (bsp_key === '') {
+                alert('请输入bsp key')
+                return
+            }
+            var md5 = $.md5(bsp_key + id);
+            $.ajax({url: "/bsp/api-m/bsp.php", method: "POST", data: {operation: "ds", id: id, key: md5}})
+                .done(function (re) {
+                    var msg = JSON.parse(re)
+                    console.log(msg)
+                    if (msg.msg === 'success') {
+                        refresh_nodes()
+                    }
+                });
+        })
+
+
+        $("#user_list").on("click", ".user_del", function (e) {
+            console.log($(this).closest(".user_s"))
+            var user_port = $(this).closest(".user_s").children(".user_port").html()
+
+            var bsp_key = $("#bsp_key").val().trim()
+            if (bsp_key === '') {
+                alert('请输入bsp key')
+                return
+            }
+            var md5 = $.md5(bsp_key + user_port);
+            $.ajax({url: "/bsp/api-m/bsp.php", method: "POST", data: {operation: "du", port: user_port, key: md5}})
+                .done(function (re) {
+                    var msg = JSON.parse(re)
+                    console.log(msg)
+                    if (msg.msg === 'success') {
+                        refresh_users()
+                    }
+                });
+        })
+
+
+        $("#user_list").on("click", ".user_modify", function (e) {
+            console.log($(this).closest(".user_s"))
+            var user_s = $(this).closest(".user_s")
+
+            var user_port = user_s.children(".user_port").html()
+            var user_pwd = user_s.children(".user_pwd").html()
+            var user_total = user_s.children(".user_total").html()
+            var user_used = user_s.children(".user_used").html()
+            var user_due_time = user_s.children(".user_due_time").html()
+
+            $("#port").val(user_port)
+
+            $("#pwd").val(user_pwd)
+
+            $("#total").val(user_total)
+
+            $("#due_time").val(user_due_time)
+            $("#used").val(user_used)
+            $(".used").show()
+            $("#addUser").modal('show')
+
+        })
+
+
+        $("#refresh_nodes").click(function () {
+
+
+            refresh_nodes()
+        })
+
+        function refresh_nodes() {
+            var bsp_key = $("#bsp_key").val().trim()
+            if (bsp_key === '') {
+                alert('请输入bsp key')
+                return
+            }
+            var md5 = $.md5(bsp_key);
+            $.ajax({url: "/bsp/api-m/bsp.php", method: "POST", data: {operation: "ls", key: md5}})
+                .done(function (re) {
+                    var msg = JSON.parse(re)
+                    console.log(msg)
+                    if (msg.msg === 'success') {
+                        var str = ''
+                        var keys = Object.keys(msg)
+                        for (var i = 0; i < keys.length - 1; i++) {
+                            str += '<tr class=\'node_s\'><td class=\'node_id\'>' + msg[i].id + '</td><td>' + msg[i].ip + '</td><td><button type="button" class="node_del btn btn-danger btn-xs">删除</button></td></tr>'
+                        }
+                        $("#node_list").html(str)
+                    }
+                });
+        }
+
+        $("#refresh_users").click(function () {
+
+
+            refresh_users()
+        })
+
+
+        function refresh_users() {
+            var bsp_key = $("#bsp_key").val().trim()
+            if (bsp_key === '') {
+                alert('请输入bsp key')
+                return
+            }
+            var md5 = $.md5(bsp_key);
+            $.ajax({url: "/bsp/api-m/bsp.php", method: "POST", data: {operation: "listusers", key: md5}})
+                .done(function (re) {
+                    var msg = JSON.parse(re)
+                    console.log(msg)
+                    if (msg.msg === 'success') {
+                        var str = ''
+                        var keys = Object.keys(msg)
+                        for (var i = 0; i < keys.length - 1; i++) {
+                            var due_time = new Date(msg[i].due_time * 1000)
+
+                            var create_time = new Date(msg[i].create_time * 1000)
+                            str += '<tr class=\'user_s\'><td>' + msg[i].id + '</td><td class=\'user_port\'>' + msg[i].port + '</td><td class=\'user_pwd\'>' + msg[i].pwd + '</td><td class=\'user_total\'>' + msg[i].total + '</td><td class=\'user_used\'>' + msg[i].used + '</td><td class=\'user_due_time\'>' + due_time.toLocaleDateString() + '</td><td>' + create_time.toLocaleDateString() + '</td><td><button type="button" class="user_modify btn btn-info btn-xs">修改</button><button type="button" class="user_del btn btn-danger btn-xs">删除</button></td></tr>'
+                        }
+                        $("#user_list").html(str)
+                    }
+                });
+        }
+
+    })
+</script>
+</body>
+</html>
